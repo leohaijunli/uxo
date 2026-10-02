@@ -1,0 +1,151 @@
+ID,Item,Class,material,m_kind,Length_cm,Diameter_cm,depth_cm,route,model,feasible,note
+A1,Pressure Cooker,IED,pec,metal,20.0,23.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A2,Plastic Projectile,3D Printed,plastic,plastic,16.8,4.0,2.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A3,M6A1,Rocket,pec,metal,54.0,6.8,20.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A4,Plastic Projectile,3D Printed,plastic,plastic,16.8,4.0,2.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A5,M6A1,Rocket,pec,metal,54.0,6.6,16.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A6,Plastic Projectile,3D Printed,plastic,plastic,16.8,4.0,4.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A7,M83,Projectile,pec,metal,36.6,6.4,12.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A8,Plastic Projectile,3D Printed,plastic,plastic,16.8,4.0,4.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A9,Aluminum Pipe bomb,IED,pec,metal,35.2,5.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A10,Plastic OZM,3D Printed,plastic,plastic,12.0,7.2,2.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A11,Aluminum Pipe Bomb,IED,pec,metal,25.4,5.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A12,Plastic OZM,3D Printed,plastic,plastic,12.0,7.7,4.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A13,M6,Rocket,pec,metal,55.0,6.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A14,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A15,M65AI,Projectile,pec,metal,21.2,6.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A16,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A17,M65AI,Projectile,pec,metal,21.2,8.4,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A18,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A19,PVC Pipe,IED,plastic,plastic,37.0,8.8,8.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A20,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A21,Propane Tank,IED,pec,metal,29.4,13.0,16.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+A22,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A23,PVC Pipe,IED,plastic,plastic,45.6,5.4,8.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+A24,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+A25,M12AI,Anti-tank mine,pec,metal,12.8,33.0,12.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B1,M228,Grenade,pec,metal,11.0,6.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B2,M228,Grenade,pec,metal,11.0,6.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B3,M228,Grenade,pec,metal,11.0,6.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B4,M228,Grenade,pec,metal,11.0,6.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B5,M18,Grenade,pec,metal,11.0,6.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B6,M228 Frag,Grenade,pec,metal,11.2,5.8,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B7,Mk1,Grenade,pec,metal,11.2,5.8,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B8,M228 Frag,Grenade,pec,metal,11.2,5.8,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B9,M228 Frag,Grenade,pec,metal,11.2,5.8,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B10,M228 Frag,Grenade,pec,metal,9.0,5.8,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B11,M213,Grenade,pec,metal,8.8,6.5,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B12,M213 ,Grenade,pec,metal,8.8,6.5,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B13,M228 Frag,Grenade,pec,metal,11.2,5.8,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B14,M228 Frag,Grenade,pec,metal,11.2,5.8,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B15,M228 Frag,Grenade,pec,metal,11.0,5.8,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B16,"""Rusty"" Aluminium",Grenade,pec,metal,12.0,6.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B17,M18,Grenade,pec,metal,12.0,6.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B18,Handgranate 343d,Grenade,pec,metal,12.0,6.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B19,POMZ-2M,Anti-personnel frag,pec,metal,10.5,6.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B20,PGU-24,Projectile,pec,metal,22.0,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B21,M793,Projectile,pec,metal,22.0,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B22,M793,Projectile,pec,metal,22.0,4.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B23,M220,Projectile,pec,metal,18.2,3.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B24,M220,Projectile,pec,metal,18.2,3.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+B25,M220,Projectile,pec,metal,18.2,3.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C1,M385,40mm,pec,metal,7.5,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C2,M385E4,40mm,pec,metal,7.5,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C3,M385,40mm,pec,metal,7.5,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C4,M385,40mm,pec,metal,7.5,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C5,Undesignated drill,40mm,pec,metal,10.0,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C6,M918,40mm,pec,metal,10.4,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C7,Drill Round,40mm,pec,metal,11.0,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C8,40mm 203 shrapnel,40mm,pec,metal,6.2,4.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C9,M385,40mm,pec,metal,10.4,4.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C10,Undesignated 40mm dummy,40mm,pec,metal,10.0,4.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C11,M715,40mm,pec,metal,7.6,4.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C12,M427,Fuze,pec,metal,9.8,4.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C13,M918,40mm,pec,metal,8.5,4.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C14,Drill Round,Projectile,pec,metal,11.2,4.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C15,Drill Round,Projectile,pec,metal,11.2,4.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C16,Drill Round,Projectile,pec,metal,11.2,4.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C17,M42,Scatterable ,pec,metal,7.4,4.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C18,M46,Scatterable ,pec,metal,7.4,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C19,M42,Scatterable ,pec,metal,7.4,4.0,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C20,M42,Scatterable,pec,metal,7.4,4.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+C21,M38,Scatterable ,pec,metal,,4.0,0.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+C22,BLU-26 (D-1)/B,Scatterable ,pec,metal,,6.0,2.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+C23,BLU-42/B,Scatterable ,pec,metal,,6.0,4.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+C24,BLU-42/B,Scatterable ,pec,metal,,6.0,6.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+C25,BLU-26 (D-1)/B,Scatterable ,pec,metal,,6.0,8.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+D1,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D2,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D3,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D4,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D5,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D6,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D7,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D8,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D9,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D10,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,0.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D11,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,2.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D12,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,2.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D13,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,4.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D14,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,4.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D15,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,6.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D16,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,6.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D17,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,8.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D18,PFM-1,Scatterable Anti-personnel,plastic,plastic,11.8,6.2,10.0,landmine_h5,PMA,yes,low dielectric contrast (weak return)
+D19,VPMA,3D Printed,plastic,plastic,3.2,10.5,0.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+D20,VPMA,3D Printed,plastic,plastic,3.2,10.5,2.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+D21,VPMA,Anti-personnel Blast,plastic,plastic,3.5,10.5,4.0,parametric,cylinder,yes,low dielectric contrast (weak return)
+D22,PMN,Anti-personnel Blast,plastic,plastic,5.0,8.0,6.0,landmine_h5,PMN,yes,low dielectric contrast (weak return)
+D23,PMN,3D Printed,plastic,plastic,6.5,11.0,8.0,landmine_h5,PMN,yes,low dielectric contrast (weak return)
+D24,TS-50,Anti-personnel,plastic,plastic,4.5,9.0,0.0,landmine_h5,TS50,yes,low dielectric contrast (weak return)
+D25,TS-50,3D Printed,plastic,plastic,4.5,9.0,2.0,landmine_h5,TS50,yes,low dielectric contrast (weak return)
+E1,M69,Projectile,pec,metal,19.4,6.0,10.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E2,M69,Projectile,pec,metal,19.4,6.0,10.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E3,60mm Mortar,Projectile,pec,metal,21.0,5.5,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E4,Inert Warhead,Rocket,pec,metal,21.0,7.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E5,M49A3,Projectile,pec,metal,23.0,7.0,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E6,M81A1,Projectile,pec,metal,17.0,3.5,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E7,M2A3,Landmine,pec,metal,15.4,6.4,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E8,Unknown,Projectile,pec,metal,18.8,8.6,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E9,M55A,Projectile,pec,metal,17.0,3.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E10,M715,Projectile,pec,metal,12.2,3.8,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E11,Drill Round,Projectile,pec,metal,16.4,3.8,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E12,20mm,Projectile,pec,metal,13.8,3.4,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E13,KSF-cap,Casing,pec,metal,6.6,5.8,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E14,KSF-casing,Casing,pec,metal,20.5,6.2,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E15,KSF-casing,Casing,pec,metal,23.0,5.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E16,KSF-cap,Casing,pec,metal,6.8,6.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E17,KSF-casing,Casing,pec,metal,20.5,6.2,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E18,KSF-casing,Casing,pec,metal,23.0,5.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E19,TNT,TNT,explosive,explosive,18.0,4.6,12.0,parametric,cylinder,yes,
+E20,Tipman Tank,IED,pec,metal,28.0,9.0,20.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E21,MK 2/2,Projectile,pec,metal,22.0,5.0,16.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E22,40mm Shell,Shell,pec,metal,4.5,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E23,40mm Shell x2,Shell,pec,metal,4.5,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E24,40mm Shell x3,Shell,pec,metal,4.5,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+E25,40mm Shell x4,Shell,pec,metal,4.5,4.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F1,Shrapnel Cache,Clutter,pec,metal,,20.0,12.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+F2,Hole,Control Hole,air,void,,,14.0,none,-,no,no Length/Diameter in CSV
+F3,Fuze Cache,Clutter,pec,metal,,20.0,14.0,parametric,sphere,yes,metal (PEC) - strongest GPR return
+F4,Hole,Control Hole,air,void,,,15.0,none,-,no,no Length/Diameter in CSV
+F5,VS-1.6,Anti-tank mine,pec,metal,10.5,22.0,12.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F6,Hole 12cm,Control Hole,air,void,,12.0,15.0,parametric,sphere,yes,air void in soil (strong contrast)
+F7,Aluminum Can,Clutter,pec,metal,12.5,6.0,2.0,landmine_h5,can,yes,metal (PEC) - strongest GPR return
+F8,Hole 13cm,Control Hole,air,void,,13.0,17.0,parametric,sphere,yes,air void in soil (strong contrast)
+F9,Aluminum Can,Clutter,pec,metal,12.5,6.0,4.0,landmine_h5,can,yes,metal (PEC) - strongest GPR return
+F10,Hole 18cm,Control Hole,air,void,,18.0,20.0,parametric,sphere,yes,air void in soil (strong contrast)
+F11,Shrapnel ,Clutter,pec,metal,12.0,8.0,0.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F12,Hole 15cm,Control Hole,air,void,,15.0,17.0,parametric,sphere,yes,air void in soil (strong contrast)
+F13,Shrapnel ,Clutter,pec,metal,12.0,9.0,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F14,Hole 20cm,Control Hole,air,void,,20.0,20.0,parametric,sphere,yes,air void in soil (strong contrast)
+F15,Copper Pipe,Clutter,pec,metal,24.0,2.5,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F16,Hole 30cm,Control Hole,air,void,,30.0,30.0,parametric,sphere,yes,air void in soil (strong contrast)
+F17,Shrapnel ,Clutter,pec,metal,9.0,4.1,6.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F18,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+F19,Shrapnel ,Clutter,pec,metal,10.0,4.0,8.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F20,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+F21,Huawei Phone,Clutter,pec,metal,12.0,5.6,2.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F22,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+F23,HTC Phone,Clutter,pec,metal,11.2,5.5,4.0,parametric,cylinder,yes,metal (PEC) - strongest GPR return
+F24,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV
+F25,,,pec,metal,,,,none,-,no,no Length/Diameter in CSV

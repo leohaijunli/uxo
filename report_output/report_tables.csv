@@ -1,0 +1,6 @@
+,10,20,30,40,60,80,120,160,240
+"Analytic signal, original grid",2,6,10,14,26,35,35,35,35
+"Analytic signal, interpolated grid",3,8,11,16,25,28,29,30,34
+3-D dipole inversion (moment),3,7,10,11,13,19,26,28,28
+3-D dipole inversion (peak nT),4,7,9,13,18,24,27,28,28
+Random points (chance),4,6,8,8,10,14,24,29,40

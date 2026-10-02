@@ -1,0 +1,279 @@
+Here are the scripts that make up the pipeline. The analysis is split into preprocessing steps that save `.pkl` files, and a main script that loads them)Skip.
+
+## 1. Preprocessing — load the magnetometer CSV(s)
+
+**`load1.py`** (loads all `*-sensys.csv`, saves `sensys_raw.pkl`):
+
+```python
+import pandas as pd, numpy as np, glob, os, sys
+
+files = sorted(glob.glob('*-sensys.csv'))
+frames=[]
+for fn in files:
+    d=pd.read_csv(fn)
+    t=os.path.basename(fn).replace('-sensys.csv','')
+    d['flight']=t
+    d['t_sec']=pd.to_datetime(d['Date']+' '+d['Time']).astype('int64')/1e9
+    frames.append(d)
+df=pd.concat(frames,ignore_index=True)
+df=df.dropna(subset=['Latitude','Longitude','TMI']).reset_index(drop=True)
+print('files:', files)
+print('total rows', len(df), 'flights', df.flight.unique())
+df.to_pickle(os.path.join(os.environ['TEMP'],'sensys_raw.pkl'))
+```
+
+## 2. Preprocessing — compute the magnetic anomaly
+
+**`anom.py`** (TMI minus regional baseline, saves `sensys_anom.pkl`):
+
+```python
+import pandas as pd, numpy as np, os
+
+df = pd.read_pickle(os.path.join(os.environ['TEMP'],'sensys_raw.pkl'))
+for fl, grp in df.groupby('flight'):
+    idx = grp.index
+    t = grp['t_sec'].values
+    T = grp['TMI'].values
+    win = 1001
+    base = pd.Series(T).rolling(win, center=True, min_periods=win//2).median().values
+    df.loc[idx,'anomaly'] = T - base
+df.to_pickle(os.path.join(os.environ['TEMP'],'sensys_anom.pkl'))
+```
+
+## 3. Preprocessing — load the ground-truth UXO positions
+
+**`actual.py`** (parses the EO CSV, saves `actual_all.pkl`):
+
+```python
+import pandas as pd, numpy as np, os
+
+act = pd.read_csv('EO_properties_and_Locations_field2.csv', encoding='utf-8-sig')
+act = act[act.ID.notna()].copy()
+act['ID']=act['ID'].astype(str).str.strip()
+def isf(v): return str(v).strip()=='1'
+act['ferrous']=act['Ferrous (1) or NF (0)'].map(isf)
+act['row']=act['ID'].str[0]
+lon0,lat0=-96.8571,36.3531; R=6371000.0
+act['x']=R*np.radians(act.Longitude.astype(float)-lon0)*np.cos(np.radians(lat0))
+act['y']=R*np.radians(act.Latitude.astype(float)-lat0)
+act.to_pickle(os.path.join(os.environ['TEMP'],'actual_all.pkl'))
+```
+
+## 4. Main analysis + figures + results
+
+**`final.py`** (analytic-signal detection, one-to-one matching, confidence, figures, `.mat`):
+
+```python
+import pandas as pd, numpy as np, os
+from scipy.ndimage import maximum_filter, label, gaussian_filter
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+OUT = os.path.join(os.getcwd(),'report_output')
+os.makedirs(OUT, exist_ok=True)
+TEMP = os.environ['TEMP']
+
+# ---------- load ----------
+df = pd.read_pickle(os.path.join(TEMP,'sensys_anom.pkl'))
+df = df[(df.Latitude.between(36.35298,36.35320)) & (df.Longitude.between(-96.85730,-96.85685))].copy()
+lon0, lat0 = -96.8571, 36.3531
+R = 6371000.0
+df['x']=R*np.radians(df.Longitude.values-lon0)*np.cos(np.radians(lat0))
+df['y']=R*np.radians(df.Latitude.values-lat0)
+act = pd.read_pickle(os.path.join(TEMP,'actual_all.pkl'))
+act['x']=R*np.radians(act.Longitude.astype(float)-lon0)*np.cos(np.radians(lat0))
+act['y']=R*np.radians(act.Latitude.astype(float)-lat0)
+targets = act[act.ferrous & act['row'].isin(list('ABCDE'))].copy()
+allfer  = act[act.ferrous].copy()
+
+# ---------- grid ----------
+cell=0.20
+gx = np.arange(np.floor(df.x.min()/cell), np.ceil(df.x.max()/cell)+1)*cell
+gy = np.arange(np.floor(df.y.min()/cell), np.ceil(df.y.max()/cell)+1)*cell
+Xi = np.clip(np.floor((df.x-df.x.min())/cell).astype(int),0,len(gx)-1)
+Yi = np.clip(np.floor((df.y-df.y.min())/cell).astype(int),0,len(gy)-1)
+summ=np.zeros((len(gy),len(gx))); cnt=np.zeros((len(gy),len(gx)))
+np.add.at(summ,(Yi,Xi),df.anomaly.values); np.add.at(cnt,(Yi,Xi),1)
+cnt[cnt==0]=1; anom=summ/cnt
+amap=np.abs(anom)
+
+# analytic signal (gradient magnitude): one peak per source
+sigma_as, msz_as, pct_as, minsep_as = 0.5, 5, 80, 0.9
+anom_g = gaussian_filter(anom, sigma=sigma_as)
+gy_, gx_ = np.gradient(anom_g, gy, gx, edge_order=1)
+asig = np.sqrt(gx_**2 + gy_**2)
+thr = np.percentile(asig[asig>0], pct_as)
+mx = maximum_filter(asig, size=msz_as)
+pk = (asig==mx) & (asig > thr)
+lbl, nf = label(pk)
+cands=[]
+for k in range(1,nf+1):
+    ys,xs=np.where(lbl==k); w=asig[ys,xs]
+    cands.append(( (gx[xs]*w).sum()/w.sum(), (gy[ys]*w).sum()/w.sum(), w.max() ))
+cands=np.array(cands)
+keep=[]
+for o in np.argsort(-cands[:,2]):
+    c=cands[o]
+    if len(keep):
+        k=np.array(keep)
+        if np.min(np.sqrt((k[:,0]-c[0])**2+(k[:,1]-c[1])**2))<minsep_as: continue
+    keep.append(c)
+peaks_xy=np.array(keep)
+np.save(os.path.join(TEMP,'peaks_xy.npy'),peaks_xy)
+print('analytic-signal detected peaks:', len(peaks_xy))
+
+# ---------- match (one-to-one) ----------
+tx = targets.x.values; ty = targets.y.values
+px = peaks_xy[:,0];   py = peaks_xy[:,1]
+D = np.sqrt((tx[:,None]-px[None,:])**2 + (ty[:,None]-py[None,:])**2)
+rows=[]; used_peak=set()
+for ti in np.argsort(D.min(axis=1)):          # best matches first
+    cand = np.argsort(D[ti]); j=None
+    for jj in cand:
+        if jj not in used_peak: j=jj; break
+    m=D[ti,j]
+    if m < 2.0:
+        used_peak.add(j)
+        rows.append(dict(ID=targets.ID.values[ti],item=targets.Item.values[ti],row=targets['row'].values[ti],
+                         ax=tx[ti],ay=ty[ti],pex=px[j],pey=py[j],err=m,detected=1))
+    else:
+        rows.append(dict(ID=targets.ID.values[ti],item=targets.Item.values[ti],row=targets['row'].values[ti],
+                         ax=tx[ti],ay=ty[ti],pex=px[j],pey=py[j],err=m,detected=0))
+res=pd.DataFrame(rows)
+res.to_csv(os.path.join(OUT,'matched_results.csv'), index=False)
+det=res[res.detected==1]
+print('NDET %d/%d = %.1f%%'%(det.shape[0],len(res),100*det.shape[0]/len(res)))
+print('median err %.2f m'%det.err.median())
+
+# ---------- confidence ----------
+flights = df.flight.unique()
+def conf4peak(px,py,r=0.6,thr=25):
+    npas=0; best=0.0
+    for fl in flights:
+        g=df[df.flight==fl]
+        dd=np.sqrt((g.x.values-px)**2+(g.y.values-py)**2)
+        sel=g.anomaly.values[dd<r]
+        if len(sel)==0: continue
+        m=np.abs(sel).max(); best=max(best,m)
+        if m>thr: npas+=1
+    cs=100*(1-np.exp(-best/100.0)); cp=100*npas/len(flights)
+    return best, npas, 0.5*cs+0.5*cp
+res['peak_nT']=0.0; res['n_pass']=0; res['conf']=0.0
+for i,t in res.iterrows():
+    if t.detected:
+        b,np_,c=conf4peak(t.pex,t.pey)
+        res.at[i,'peak_nT']=b; res.at[i,'n_pass']=np_; res.at[i,'conf']=c
+res.to_csv(os.path.join(OUT,'uxo_detections_conf.csv'), index=False)
+
+# ---------- figures ----------
+# FIG1 TMI coverage
+fig,ax=plt.subplots(figsize=(7,6),dpi=110)
+tlo=np.percentile(df.TMI.values,0.5); thi=np.percentile(df.TMI.values,99.5)
+sc=ax.scatter(df.x,df.y,c=df.TMI,s=1,cmap='jet',vmin=tlo,vmax=thi,alpha=0.6)
+plt.colorbar(sc,ax=ax,label='TMI (nT)')
+ax.set_title('Magnetometer survey coverage (TMI)'); ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.set_aspect('equal')
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig1_survey_tmi.png')); plt.close()
+
+# FIG2 anomaly map
+fig,ax=plt.subplots(figsize=(7,6),dpi=110)
+vmax2=np.percentile(np.abs(anom[anom!=0]),98) if (anom!=0).any() else np.abs(anom).max()
+im=ax.imshow(np.flipud(anom),extent=[gx.min(),gx.max(),gy.min(),gy.max()],cmap='RdBu_r',vmin=-vmax2,vmax=vmax2,aspect='equal')
+plt.colorbar(im,ax=ax,label='Magnetic anomaly (nT)')
+ax.set_title('Gridded magnetic anomaly (+/-%.0f nT)'%vmax2); ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)')
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig2_anomaly_map.png')); plt.close()
+
+# FIG3 detected peaks on |anomaly|
+fig,ax=plt.subplots(figsize=(7,6),dpi=110)
+vmax3=np.percentile(amap[amap>0],98) if (amap>0).any() else amap.max()
+amap_disp=np.where(amap>0,amap,np.nan)
+cm3=plt.cm.plasma.copy(); cm3.set_bad('white')
+im=ax.imshow(np.flipud(amap_disp),extent=[gx.min(),gx.max(),gy.min(),gy.max()],cmap=cm3,vmin=0,vmax=vmax3,aspect='equal')
+plt.colorbar(im,ax=ax,label='|anomaly| (nT)')
+ax.scatter(peaks_xy[:,0],peaks_xy[:,1],marker='+',s=90,c='cyan',linewidths=1.5,label='detected peaks')
+ax.set_title('Detected anomaly peaks (estimated UXO positions)')
+ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.legend(loc='upper right')
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig3_detected_peaks.png')); plt.close()
+
+# FIG4 comparison (consistent with fig7)
+fig,ax=plt.subplots(figsize=(7,6),dpi=110)
+im=ax.imshow(np.flipud(amap),extent=[gx.min(),gx.max(),gy.min(),gy.max()],cmap='Greys',aspect='equal')
+det_r=res[res.detected==1]; miss_r=res[res.detected==0]
+sc=ax.scatter(det_r.pex,det_r.pey,c=det_r.conf,cmap='RdYlGn',vmin=0,vmax=100,s=75,edgecolor='k',linewidths=0.4,label='detected (confidence)')
+ax.scatter(det_r.ax,det_r.ay,marker='o',s=28,c='none',edgecolor='blue',linewidths=0.8,label='actual (detected)')
+for t in det_r.itertuples(): ax.plot([t.ax,t.pex],[t.ay,t.pey],'-',c='black',lw=0.7,alpha=0.7)
+ax.scatter(miss_r.ax,miss_r.ay,marker='x',s=70,c='black',linewidths=1.4,label='missed (not detected)')
+plt.colorbar(sc,ax=ax,label='confidence (%)')
+ax.set_xlim(targets.x.min()-0.5,targets.x.max()+0.5); ax.set_ylim(targets.y.min()-0.7,targets.y.max()+0.7)
+ax.set_title('Detected ferrous UXO by confidence (rows A-E)')
+ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.legend(loc='upper right',fontsize=8)
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig4_comparison.png')); plt.close()
+
+# FIG5 error histogram
+fig,ax=plt.subplots(figsize=(7,5),dpi=110)
+ax.hist(det.err,bins=np.arange(0,2.05,0.1),edgecolor='k',alpha=0.8)
+ax.axvline(det.err.median(),color='r',ls='--',label='median=%.2f m'%det.err.median())
+ax.set_title('Positional error of detected UXO'); ax.set_xlabel('horizontal error (m)'); ax.set_ylabel('count'); ax.legend()
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig5_error_hist.png')); plt.close()
+
+# FIG6 detection by row
+fig,ax=plt.subplots(figsize=(7,5),dpi=110)
+rs=res.groupby('row').apply(lambda g: pd.Series({'n':len(g),'det':g.detected.sum()})).reset_index()
+rs['rate']=100*rs.det/rs.n
+ax.bar(rs.row,rs.rate,color='steelblue'); ax.set_title('Detection rate by row')
+ax.set_xlabel('row (A=north ... E=south)'); ax.set_ylabel('detection rate (%)')
+for i,r in rs.iterrows(): ax.text(i,r.rate+1,'%d/%d'%(r.det,r.n),ha='center')
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig6_detection_by_row.png')); plt.close()
+
+# FIG7 all ferrous targets (full extent)
+fig,ax=plt.subplots(figsize=(7,6),dpi=110)
+im=ax.imshow(np.flipud(amap),extent=[gx.min(),gx.max(),gy.min(),gy.max()],cmap='Greys',aspect='equal')
+det_r=res[res.detected==1]; miss_r=res[res.detected==0]
+sc=ax.scatter(det_r.pex,det_r.pey,c=det_r.conf,cmap='RdYlGn',vmin=0,vmax=100,s=75,edgecolor='k',linewidths=0.4,label='detected (confidence)')
+ax.scatter(det_r.ax,det_r.ay,marker='o',s=28,c='none',edgecolor='blue',linewidths=0.8,label='actual (detected)')
+for t in det_r.itertuples(): ax.plot([t.ax,t.pex],[t.ay,t.pey],'-',c='black',lw=0.7,alpha=0.7)
+ax.scatter(miss_r.ax,miss_r.ay,marker='x',s=70,c='black',linewidths=1.4,label='missed (not detected)')
+plt.colorbar(sc,ax=ax,label='confidence (%)')
+ax.set_title('All ferrous UXO targets - detected vs missed')
+ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.legend(loc='upper right',fontsize=8)
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig7_confidence_map.png')); plt.close()
+
+# FIG8 all objects (ferrous + non-ferrous)
+fig,ax=plt.subplots(figsize=(8,7),dpi=110)
+im=ax.imshow(np.flipud(amap_disp),extent=[gx.min(),gx.max(),gy.min(),gy.max()],cmap=cm3,vmin=0,vmax=vmax3,aspect='equal')
+det_ids=set(res[res.detected==1].ID)
+grp=[]
+for t in act.itertuples(): grp.append(dict(x=t.x,y=t.y,fer=t.ferrous,det=t.ID in det_ids,clutter=t.row=='F'))
+grp=pd.DataFrame(grp)
+def plotgrp(mask,marker,fc,ec,ms,mew,label):
+    g=grp[mask]
+    if len(g): ax.scatter(g.x,g.y,marker=marker,s=ms,c=fc,edgecolors=ec,linewidths=mew,label=label)
+plotgrp(grp.fer&grp.det,'o','lime','black',70,1.0,'ferrous UXO detected')
+plotgrp(grp.fer&(~grp.det)&(~grp.clutter),'o','none','green',70,1.4,'ferrous missed')
+plotgrp((~grp.fer)&(~grp.clutter),'o','none','grey',55,1.0,'non-ferrous UXO')
+plotgrp(grp.fer&grp.clutter,'o','orange','k',55,0.8,'ferrous clutter (F)')
+plotgrp((~grp.fer)&grp.clutter,'D','none','grey',45,1.0,'non-ferrous clutter (F)')
+ax.scatter(peaks_xy[:,0],peaks_xy[:,1],marker='+',s=110,c='red',linewidths=1.8,label='detected anomaly peak')
+for t in res[res.detected==1].itertuples(): ax.plot([t.ax,t.pex],[t.ay,t.pey],'-',c='black',lw=0.7,alpha=0.7)
+ax.set_title('All objects (ferrous + non-ferrous) vs detected anomaly peaks')
+ax.set_xlabel('x (m)'); ax.set_ylabel('y (m)'); ax.legend(loc='upper right',fontsize=7)
+plt.tight_layout(); plt.savefig(os.path.join(OUT,'fig8_all_objects.png')); plt.close()
+
+# ---------- save .mat ----------
+from scipy.io import savemat
+savemat(os.path.join(OUT,'uxo_detection_results.mat'), {
+  'survey_x': df.x.values, 'survey_y': df.y.values, 'survey_tmi': df.TMI.values,
+  'anomaly_nT': df.anomaly.values, 'anomaly_grid': anom, 'grid_x': gx, 'grid_y': gy,
+  'detected_peaks_x': peaks_xy[:,0], 'detected_peaks_y': peaks_xy[:,1], 'peak_magnitude_nT': peaks_xy[:,2],
+  'actual_ferrous_x': targets.x.values, 'actual_ferrous_y': targets.y.values, 'actual_ferrous_ID': targets.ID.values,
+  'match_ID': res.ID.values, 'match_err_m': res.err.values, 'match_detected': res.detected.values,
+  'match_conf_pct': res.conf.values, 'match_peak_nT': res.peak_nT.values, 'match_n_pass': res.n_pass.values,
+  'n_targets': len(res), 'n_detected': int(res.detected.sum()), 'median_err_m': det.err.median(),
+})
+print('saved .mat and figures to', OUT)
+print('done')
+```
+
+**Run order:** `load1.py` → `anom.py` → `actual.py` → `final.py` (from the folder containing the CSVs). All output goes to `report_output/`.
+
+Key adjustable parameters in `final.py`: detection threshold percentile (`pct_as=80`), match radius (`2.0` m), grid cell (`0.20` m), and min separation (`0.9` m).
