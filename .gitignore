@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+.venv-gpr/
+/tmp/
+*.h5
+nohup.out

@@ -1,0 +1,2 @@
+ID,item,material,route,model,radius_m,depth_top_m,nx,ny,dx,dy,ok
+F6,Hole 12cm,air,parametric,sphere,0.06,0.15,11,11,0.02,0.02,True

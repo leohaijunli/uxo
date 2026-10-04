@@ -1,9 +1,0 @@
-ID,ok,item,material,radius_m,length_m,depth_top_m,ntraces
-A3,True,M6A1,pec,0.034,0.1,0.2,11
-B1,True,M228,pec,0.03,0.1,0.05,11
-C21,True,M38,pec,0.02,,0.05,11
-F6,True,Hole 12cm,air,0.06,,0.15,11
-E19,True,TNT,explosive,0.023,0.1,0.12,11
-D22,True,PMN,plastic,0.04,0.05,0.06,11
-F7,True,Aluminum Can,pec,0.03,0.1,0.02,11
-A1,True,Pressure Cooker,pec,0.115,0.1,0.08,11

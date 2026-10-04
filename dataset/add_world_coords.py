@@ -26,6 +26,31 @@ from invert3d import lonlat_to_xy, load_ground_truth  # noqa
 RADIUS = 3.0          # m, initial search radius for local attitude
 
 
+def clean_val(v):
+    """Coerce any scalar/array to a pickle-free numpy dtype so the npz can be
+    loaded with the default allow_pickle=False (strings as unicode, numbers as
+    float/int, None length -> nan)."""
+    a = np.asarray(v)
+    if a.dtype.kind == "O":                       # object / None / mixed
+        if a.ndim == 0:
+            x = a.item()
+            if x is None:
+                return np.array(np.nan, dtype=float)
+            if isinstance(x, str):
+                return np.array(x, dtype=np.str_)
+            if isinstance(x, (bool, np.bool_)):
+                return np.array(bool(x))
+            return np.array(float(x) if np.isfinite(x) else np.nan, dtype=float)
+        return a.astype(object)
+    if a.dtype.kind in "US":                      # str
+        return a.astype(np.str_)
+    if a.dtype.kind == "b":                       # bool
+        return a
+    if a.dtype.kind in "iu":                      # int
+        return a.astype(np.int64)
+    return a.astype(np.float64)
+
+
 def circ_mean(deg):
     a = np.radians(deg[~np.isnan(deg)])
     return float(np.degrees(np.arctan2(np.mean(np.sin(a)), np.mean(np.cos(a)))))
@@ -66,10 +91,11 @@ def enrich(ddir):
         o = o.iloc[0]
         ox, oy = lonlat_to_xy(o.Longitude, o.Latitude)
         az, pit, rl, n = local_attitude(ox, oy, px, py, heading, pitch, roll)
-        d = np.load(f)
-        keep = {k: d[k] for k in d.files}
-        keep.update(dict(x_world=ox, y_world=oy, azimuth_deg=az,
-                         pitch_deg=pit, roll_deg=rl, n_attitude=n))
+        d = np.load(f, allow_pickle=True)
+        keep = {k: clean_val(d[k]) for k in d.files}
+        keep.update(dict(x_world=np.float64(ox), y_world=np.float64(oy),
+                         azimuth_deg=np.float64(az), pitch_deg=np.float64(pit),
+                         roll_deg=np.float64(rl), n_attitude=np.int64(n)))
         np.savez_compressed(f, **keep)
         if not df.empty and "ID" in df:
             df.loc[df.ID == idv, ["x_world", "y_world", "azimuth_deg",
